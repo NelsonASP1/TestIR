@@ -8,7 +8,7 @@
 
 ## Views ##
 
-| Project                                                                                                                                                                          |                                                      |
-|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
-| <br><img src="screen/001.png" alt="Screen1" width="240"></img> <br><br> A view with two fields that allows me to insert two parameters.<br><br> • Varied UI<br>• Dark themes<br> | <img src="screen/001.png" width="320" alt="Screen2"> |
+| Project                                                                                                                                              |                                                      |
+|:-----------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
+| <br><img src="screen/001.png" alt="Screen1" width="240"></img> <br><br> Control de Versiones<br><br> • Manejo de excepciones (Try/Catch) <br>•  Manejo de errores de consumo de API Rest<br> | <img src="screen/001.png" width="320" alt="Screen2"> |
 |                                                                                                                                                                                                                          
