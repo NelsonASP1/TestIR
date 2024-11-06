@@ -1,5 +1,6 @@
 package com.example.testir.ui.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -8,23 +9,36 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.testir.R
+import com.example.testir.databinding.ActivityHomeBinding
+import com.example.testir.databinding.ActivityMainBinding
+import com.example.testir.ui.home.HomeActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
-    private val viewModel: MainViewModel by viewModels()
+    private lateinit var binding: ActivityMainBinding
+    private val versionViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        viewModel.data.observe(this, Observer { res ->
+        versionViewModel.versionResult.observe(this) { res ->
             val codigo = getAppVersion()
             if (res != codigo){
-                showAlertDialog("Error","La versión del aplicativo no coincide")
+                showAlertDialog("Error","La version del aplicativo no coincide")
             }
-        })
-        viewModel.fetchData()
+        }
+        versionViewModel.fetchVersion()
+        init()
+    }
+
+    private fun init(){
+        binding.loginButton.setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun getAppVersion(): String {
@@ -45,6 +59,4 @@ class MainActivity : AppCompatActivity() {
         val dialog: AlertDialog = builder.create()
         dialog.show()
     }
-
-
 }

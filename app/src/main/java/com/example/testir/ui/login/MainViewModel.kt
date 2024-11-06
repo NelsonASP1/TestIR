@@ -1,36 +1,37 @@
 package com.example.testir.ui.login
-
-import android.util.Log
-import com.example.testir.repository.Repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import androidx.lifecycle.viewModelScope
+import com.example.testir.repository.VersionRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
-    private val repository = Repository()
-    private val _data = MutableLiveData<String>()
-    val data: LiveData<String> get() = _data
 
-    fun fetchData() {
-        val call = repository.getVersion()
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val repository: VersionRepository
+) : ViewModel() {
+
+    private val _versionResult = MutableLiveData<String>()
+    val versionResult: LiveData<String> get() = _versionResult
+
+    fun fetchVersion() {
+        viewModelScope.launch {
+            try {
+                val response = repository.getVersion()
                 if (response.isSuccessful) {
-                    _data.value = response.body()
-                    Log.d("API_RESPONSE", "Data recibida: ${response.body()}")
+                    val remoteVersion = response.body()?.trim()
+                    _versionResult.postValue(remoteVersion ?: "Respuesta de versión remota es nula.")
+                } else {
+                    _versionResult.postValue("Error al obtener la versión: ${response.code()}")
                 }
-
+            } catch (e: HttpException) {
+                _versionResult.postValue("Error al obtener la versión: ${e.message()}")
             }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                // Manejar el error
-
-                Log.e("API_RESPONSE", "Fallo al hacer la solicitud: ", t)
-            }
-        })
+        }
     }
 }
 
